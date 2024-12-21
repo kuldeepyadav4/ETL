@@ -62,6 +62,7 @@ with DAG(
             Customer_Name VARCHAR(50)
         );
         """)
+        cursor.execute(f"""TRUNCATE TABLE {table_customer};""")
 
         # Insert Customer Data
         for customer in data['customers']:
@@ -92,7 +93,12 @@ with DAG(
             Operational_Hours VARCHAR(50)
         );
         """)
-
+        cursor.execute(f"""TRUNCATE TABLE {table_restaurant};""")
+        cursor.execute(f"""
+        ALTER TABLE {table_restaurant}
+        ADD CONSTRAINT restaurant_pkey PRIMARY KEY (Restaurant_ID);
+    """)
+        conn.commit()
         # Insert Restaurant Data
         for restaurant in data['restaurants']:
             cursor.execute(f"""
@@ -129,6 +135,7 @@ with DAG(
             FOREIGN KEY (Restaurant_ID) REFERENCES {table_restaurant}(Restaurant_ID)
         );
         """)
+        cursor.execute(f"""TRUNCATE TABLE {table_order};""")
 
         # Insert Order Data
         for order in data['orders']:
@@ -150,7 +157,6 @@ with DAG(
 
         # Commit changes
         conn.commit()
-
         # Close cursor
         cursor.close()
 
